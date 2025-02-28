@@ -9,10 +9,16 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Products", description = "Operations related to products")
 public class AddressController {
 
+    @GetMapping("/{countryCode}/validate")
+    public void getAddressValidated(@PathVariable CountryCode countryCode){
+
+    }
+
     @GetMapping("/{countryCode}/search")
     public void getAddressByCountrySearch(@PathVariable CountryCode countryCode){
 
     }
+
 
     @GetMapping("/search")
     public void getAddressBySearch(
@@ -22,8 +28,8 @@ public class AddressController {
 
     }
 
-    @GetMapping("/{id}")
-    public void getAddressById(@PathVariable String id){
+    @PostMapping("/{countryCode}/")
+    public void postCountrySpecificAddress(@RequestBody String requestBody, @PathVariable CountryCode countryCode) {
 
     }
 
