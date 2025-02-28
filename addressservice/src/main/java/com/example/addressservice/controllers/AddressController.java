@@ -2,10 +2,7 @@ package com.example.addressservice.controllers;
 
 import com.example.addressservice.enums.CountryCode;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/address")
@@ -13,7 +10,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class AddressController {
 
     @GetMapping("/{countryCode}/search")
-    public void getAddress(@PathVariable CountryCode countryCode){
+    public void getAddressByCountrySearch(@PathVariable CountryCode countryCode){
+
+    }
+
+    @GetMapping("/search")
+    public void getAddressBySearch(
+            @RequestParam(name = "Name", required = false) String name,
+            @RequestParam(name = "Addline1", required = false) String addLine1
+    ){
+
+    }
+
+    @GetMapping("/{id}")
+    public void getAddressById(@PathVariable String id){
 
     }
 

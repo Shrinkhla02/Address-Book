@@ -1,11 +1,9 @@
 package com.example.addressservice.enums;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
-@AllArgsConstructor
 @ToString
 public enum CountryCode {
     USA("United States"),
@@ -16,4 +14,7 @@ public enum CountryCode {
     // Add more countries as needed
 
     private final String countryName;
+    CountryCode(String countryName) {
+        this.countryName = countryName;
+    }
 }
