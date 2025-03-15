@@ -17,6 +17,9 @@ const AddressSearch = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showResults, setShowResults] = useState(false);
   
+  // Add validation state
+  const [nameError, setNameError] = useState('');
+  
   const resultsPerPage = 10;
 
   // Mock data for demonstration
@@ -37,6 +40,17 @@ const AddressSearch = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Add name validation
+    if (name === 'name') {
+      // Check if the value contains only alphabets and spaces
+      if (value && !/^[A-Za-z\s]+$/.test(value)) {
+        setNameError('Name should contain only alphabets and spaces');
+      } else {
+        setNameError('');
+      }
+    }
+    
     setSearchParams(prev => ({ ...prev, [name]: value }));
   };
 
@@ -52,6 +66,11 @@ const AddressSearch = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    
+    // Validate before search
+    if (nameError) {
+      return; // Don't proceed with search if there's a validation error
+    }
     
     // Filter mock addresses based on search criteria
     let results = [...mockAddresses];
@@ -101,6 +120,7 @@ const AddressSearch = () => {
       zipCode: '',
       countries: []
     });
+    setNameError('');
     setSearchResults([]);
     setShowResults(false);
   };
@@ -137,12 +157,18 @@ const AddressSearch = () => {
                   <label htmlFor="name" className="form-label">Name</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${nameError ? 'is-invalid' : ''}`}
                     id="name"
                     name="name"
                     value={searchParams.name}
                     onChange={handleInputChange}
+                    placeholder="Enter alphabetic characters only"
                   />
+                  {nameError && (
+                    <div className="invalid-feedback">
+                      {nameError}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="col-md-6">
@@ -246,7 +272,11 @@ const AddressSearch = () => {
               <button type="button" className="btn btn-outline-secondary me-2" onClick={handleReset}>
                 Reset
               </button>
-              <button type="submit" className="btn btn-dark">
+              <button 
+                type="submit" 
+                className="btn btn-dark"
+                disabled={nameError ? true : false}
+              >
                 Search
               </button>
             </div>
