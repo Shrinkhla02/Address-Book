@@ -2,7 +2,6 @@ import './App.css';
 
 import React from 'react';
 import Layout from './components/Layout';
-import AddressSearch from './components/AddressSearch';
 import AddressManagement from './components/AddressManagement';
 
 function App() {

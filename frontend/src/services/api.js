@@ -1,5 +1,5 @@
 // src/services/api.js
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'http://localhost:8081';
 
 export const api = {
   // Create a new address
