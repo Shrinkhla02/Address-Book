@@ -118,7 +118,7 @@ const AddressSearch = () => {
       address2: '',
       address3: '',
       region: '',
-      zipCode: '',
+      code: '',
       countryCodes: []
     });
     setNameError('');
@@ -255,12 +255,12 @@ const AddressSearch = () => {
               </div>
               <div className="col-md-6">
                 <div className="mb-3">
-                  <label htmlFor="zipCode" className="form-label">Zip Code</label>
+                  <label htmlFor="code" className="form-label">Zip Code</label>
                   <input
                     type="text"
                     className="form-control"
-                    id="zipCode"
-                    name="zipCode"
+                    id="code"
+                    name="code"
                     value={searchParams.code}
                     onChange={handleInputChange}
                   />
@@ -271,7 +271,7 @@ const AddressSearch = () => {
             <div className="mb-4">
               <label className="form-label">Countries</label>
               <div className="row">
-                {['India', 'Germany', 'UK', 'USA', 'Canada'].map(country => (
+                {['IND', 'DEU', 'GBR', 'USA', 'CAN'].map(country => (
                   <div className="col-md-4 mb-2" key={country}>
                     <div className="form-check">
                       <input

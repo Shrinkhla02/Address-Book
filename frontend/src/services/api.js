@@ -31,7 +31,7 @@ export const api = {
         addressLine = '', 
         name = '',
         region = '',
-        zipCode = '',
+        code = '',
         countryCodes = [], 
         page = 0, 
         size = 10 
@@ -43,7 +43,7 @@ export const api = {
       if (addressLine) queryParams.append('addressLine', addressLine);
       if (name) queryParams.append('name', name);
       if (region) queryParams.append('region', region);
-      if (zipCode) queryParams.append('zipCode', zipCode);
+      if (code) queryParams.append('code', code);
       
       // Add country codes if present
       if (countryCodes && countryCodes.length > 0) {
