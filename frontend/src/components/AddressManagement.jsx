@@ -9,8 +9,8 @@ const AddressSearch = () => {
     addressLine: '',
     address2: '',
     address3: '',
-    state: '',
-    zipCode: '',
+    region: '',
+    code: '',
     countryCodes: []
   });
 
@@ -24,6 +24,7 @@ const AddressSearch = () => {
   
   // Add validation state
   const [nameError, setNameError] = useState('');
+  console.log("serachResults: ", searchResults)
   
   const resultsPerPage = 10;
 
@@ -88,17 +89,19 @@ const AddressSearch = () => {
       const params = {
         name: searchParams.name,
         addressLine: searchParams.addressLine,
-        state: searchParams.state,
-        zipCode: searchParams.zipCode,
+        region: searchParams.region,
+        code: searchParams.code,
         countryCodes: searchParams.countryCodes.length > 0 ? searchParams.countryCodes : undefined,
         page: 0,
         size: resultsPerPage
       };
       
       const response = await api.searchAddresses(params);
+      console.log("Params1: ", params)
+      console.log(response.data.content);
       
-      setSearchResults(response.content || []);
-      setTotalPages(response.totalPages || 1);
+      setSearchResults(response.data.content || []);
+      setTotalPages(response.data.totalPages || 1);
       setCurrentPage(0);
       setShowResults(true);
       setLoading(false);
@@ -114,7 +117,7 @@ const AddressSearch = () => {
       addressLine: '',
       address2: '',
       address3: '',
-      state: '',
+      region: '',
       zipCode: '',
       countryCodes: []
     });
@@ -156,21 +159,22 @@ const AddressSearch = () => {
         const params = {
           name: searchParams.name,
           addressLine: searchParams.addressLine,
-          state: searchParams.state,
-          zipCode: searchParams.zipCode,
+          region: searchParams.region,
+          code: searchParams.code,
           countryCodes: searchParams.countryCodes.length > 0 ? searchParams.countryCodes : undefined,
           page: pageNumber,
           size: resultsPerPage
         };
         
         response = await api.searchAddresses(params);
+        console.log("Params: ", params)
       } else {
         // Otherwise, get all addresses with pagination
         response = await api.getAddresses(pageNumber, resultsPerPage);
       }
       
-      setSearchResults(response.content || []);
-      setTotalPages(response.totalPages || 1);
+      setSearchResults(response.data.content || []);
+      setTotalPages(response.data.totalPages || 1);
       setCurrentPage(pageNumber);
       setLoading(false);
     } catch (err) {
@@ -185,7 +189,7 @@ const AddressSearch = () => {
       searchParams.name ||
       searchParams.addressLine ||
       searchParams.state ||
-      searchParams.zipCode ||
+      searchParams.code ||
       searchParams.countryCodes.length > 0
     );
   };
@@ -242,9 +246,9 @@ const AddressSearch = () => {
                   <input
                     type="text"
                     className="form-control"
-                    id="state"
-                    name="state"
-                    value={searchParams.state}
+                    id="region"
+                    name="region"
+                    value={searchParams.region}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -257,7 +261,7 @@ const AddressSearch = () => {
                     className="form-control"
                     id="zipCode"
                     name="zipCode"
-                    value={searchParams.zipCode}
+                    value={searchParams.code}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -356,7 +360,8 @@ const AddressSearch = () => {
                           className="address-row"
                         >
                           <td>{address.name}</td>
-                          <td>{address.addressLine || address.address1}</td>
+                          {/* <td>{address.addressLine || address.address1}</td> */}
+                          <td>{address.addLine1}</td>
                           <td>{address.state}</td>
                           <td>{address.country}</td>
                         </tr>
@@ -365,7 +370,7 @@ const AddressSearch = () => {
                   </table>
                 </div>
                 
-                {totalPages > 1 && (
+                 {totalPages > 1 && (
                   <div className="d-flex justify-content-center p-3">
                     <nav>
                       <ul className="pagination mb-0">
@@ -379,20 +384,71 @@ const AddressSearch = () => {
                           </button>
                         </li>
                         
-                        {[...Array(totalPages).keys()].map(number => (
-                          <li 
-                            key={number} 
-                            className={`page-item ${currentPage === number ? 'active' : ''}`}
-                          >
-                            <button
-                              className="page-link"
-                              onClick={() => handlePageChange(number)}
-                              disabled={loading}
-                            >
-                              {number + 1}
-                            </button>
-                          </li>
-                        ))}
+                        {(() => {
+                          const pagesToShow = [];
+                          const maxPagesToShow = 10;
+                          
+                          // Always show first page
+                          pagesToShow.push(0);
+                          
+                          if (totalPages <= maxPagesToShow) {
+                            // If we have 10 or fewer pages, show all of them
+                            for (let i = 1; i < totalPages; i++) {
+                              pagesToShow.push(i);
+                            }
+                          } else {
+                            // Handle cases with more than 10 pages
+                            const siblingsCount = 2; // Number of siblings to show on each side of current page
+                            
+                            // Show pages around current page
+                            const startPage = Math.max(1, currentPage - siblingsCount);
+                            const endPage = Math.min(totalPages - 2, currentPage + siblingsCount);
+                            
+                            // Add ellipsis after first page if needed
+                            if (startPage > 1) {
+                              pagesToShow.push('start-ellipsis');
+                            }
+                            
+                            // Add pages around current page
+                            for (let i = startPage; i <= endPage; i++) {
+                              pagesToShow.push(i);
+                            }
+                            
+                            // Add ellipsis before last page if needed
+                            if (endPage < totalPages - 2) {
+                              pagesToShow.push('end-ellipsis');
+                            }
+                            
+                            // Always show last page
+                            pagesToShow.push(totalPages - 1);
+                          }
+                          
+                          // Remove duplicates (can happen in edge cases)
+                          return [...new Set(pagesToShow)].map(page => {
+                            if (page === 'start-ellipsis' || page === 'end-ellipsis') {
+                              return (
+                                <li key={page} className="page-item disabled">
+                                  <span className="page-link">...</span>
+                                </li>
+                              );
+                            }
+                            
+                            return (
+                              <li 
+                                key={`page-${page}`} 
+                                className={`page-item ${currentPage === page ? 'active' : ''}`}
+                              >
+                                <button
+                                  className="page-link"
+                                  onClick={() => handlePageChange(page)}
+                                  disabled={loading}
+                                >
+                                  {page + 1}
+                                </button>
+                              </li>
+                            );
+                          });
+                        })()}
                         
                         <li className={`page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`}>
                           <button 
@@ -431,22 +487,25 @@ const AddressSearch = () => {
                   <dt className="col-sm-3">Name</dt>
                   <dd className="col-sm-9">{selectedAddress.name}</dd>
                   
-                  <dt className="col-sm-3">Address Line</dt>
-                  <dd className="col-sm-9">{selectedAddress.addressLine || selectedAddress.address1}</dd>
+                  <dt className="col-sm-3">Address 1</dt>
+                  <dd className="col-sm-9">{selectedAddress.addLine1}</dd>
                   
-                  {(selectedAddress.address2 || selectedAddress.addressLine2) && (
+                  {(selectedAddress.addLine2) && (
                     <>
                       <dt className="col-sm-3">Address 2</dt>
-                      <dd className="col-sm-9">{selectedAddress.address2 || selectedAddress.addressLine2}</dd>
+                      <dd className="col-sm-9">{selectedAddress.addLine2}</dd>
                     </>
                   )}
                   
-                  {(selectedAddress.address3 || selectedAddress.addressLine3) && (
+                  {(selectedAddress.addLine3) && (
                     <>
                       <dt className="col-sm-3">Address 3</dt>
-                      <dd className="col-sm-9">{selectedAddress.address3 || selectedAddress.addressLine3}</dd>
+                      <dd className="col-sm-9">{selectedAddress.addLine3}</dd>
                     </>
                   )}
+
+                  {/* <dt className="col-sm-3">City</dt>
+                  <dd className="col-sm-9">{selectedAddress.state}</dd> */}
                   
                   <dt className="col-sm-3">State</dt>
                   <dd className="col-sm-9">{selectedAddress.state}</dd>
