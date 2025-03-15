@@ -21,9 +21,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AddressService {
-    
+
     private final AddressRepository addressRepository;
-    
+
     public Page<CountrySpecificAddressDTO> getAllAddresses(Pageable pageable) {
         Page<Address> addresses = addressRepository.findAll(pageable);
         return addresses.map(address -> {
@@ -31,35 +31,36 @@ public class AddressService {
             return addressHandler.mapToCountrySpecificDTO(address);
         });
     }
-    
+
     public Page<CountrySpecificAddressDTO> searchAddresses(
             String name,
             String addressLine,
             List<CountryCode> countryCodes,
             String region,
+            String city,
             String code,
             Pageable pageable) {
-        
+
         Specification<Address> spec = AddressSpecification.searchAddresses(
-                name, addressLine, countryCodes, region, code);
-        
+                name, addressLine, countryCodes, city, region, code);
+
         Page<Address> addresses = addressRepository.findAll(spec, pageable);
         return addresses.map(address -> {
             var addressHandler = AddressServiceFactory.getHandler(address.getCountryCode());
             return addressHandler.mapToCountrySpecificDTO(address);
         });
     }
-    
+
     public CountrySpecificAddressDTO saveAddress(@Valid AddressRequestDTO addressRequest) {
         var addressHandler = AddressServiceFactory.getHandler(addressRequest.getCountryCode());
-        
+
         // Perform country-specific validation
         AddressValidationResponseDTO validationResult = addressHandler.validate(addressRequest);
-        
+
         if (!validationResult.isValid()) {
             throw new ValidationException("Address validation failed", validationResult.getErrors());
         }
-        
+
         // Delegate saving to the country-specific handler and return country-specific format
         return addressHandler.save(addressRequest);
     }
