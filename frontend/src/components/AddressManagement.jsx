@@ -25,30 +25,17 @@ const AddressSearch = () => {
   const [totalAddresses, setTotalAddresses] = useState(0);
   console.log("selectedAddress: ", selectedAddress)
   
-  // Add validation state
+  // Add validation states
   const [nameError, setNameError] = useState('');
+  const [countryError, setCountryError] = useState(false);
   console.log("serachResults: ", searchResults)
   
   const resultsPerPage = 10;
-
-  // // Load initial addresses on component mount
-  // useEffect(() => {
-  //   const fetchInitialAddresses = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await api.getAddresses(0, resultsPerPage);
-  //       setSearchResults(response.content || []);
-  //       setTotalPages(response.totalPages || 1);
-  //       setShowResults(true);
-  //       setLoading(false);
-  //     } catch (err) {
-  //       setError('Failed to load addresses. Please try again. blah blah');
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchInitialAddresses();
-  // }, []);
+  
+  // Check if country selection is valid whenever it changes
+  useEffect(() => {
+    setCountryError(searchParams.countryCodes.length === 0);
+  }, [searchParams.countryCodes]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -80,8 +67,8 @@ const AddressSearch = () => {
     e.preventDefault();
     
     // Validate before search
-    if (nameError) {
-      return; // Don't proceed with search if there's a validation error
+    if (nameError || countryError) {
+      return; // Don't proceed with search if there are validation errors
     }
     
     try {
@@ -129,21 +116,6 @@ const AddressSearch = () => {
     });
     setNameError('');
   };
-  
-  // const loadInitialAddresses = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await api.getAddresses(0, resultsPerPage);
-  //     setSearchResults(response.content || []);
-  //     setTotalPages(response.totalPages || 1);
-  //     setCurrentPage(0);
-  //     setShowResults(true);
-  //     setLoading(false);
-  //   } catch (err) {
-  //     setError('Failed to load addresses. Please try again.');
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleAddressClick = (address) => {
     setSelectedAddress(address);
@@ -295,7 +267,14 @@ const AddressSearch = () => {
             </div>
             
             <div className="mb-4">
-              <label className="form-label">Countries</label>
+              <div className="d-flex align-items-center">
+                <label className="form-label mb-0 me-2">Countries</label>
+                {countryError && (
+                  <span className="text-danger small">
+                    Please select at least one country
+                  </span>
+                )}
+              </div>
               <div className="row">
                 {['IND', 'DEU', 'GBR', 'USA', 'CAN'].map(country => (
                   <div className="col-md-4 mb-2" key={country}>
@@ -308,6 +287,7 @@ const AddressSearch = () => {
                         value={country}
                         checked={searchParams.countryCodes.includes(country)}
                         onChange={handleCountryChange}
+                        required={searchParams.countryCodes.length === 0}
                       />
                       <label className="form-check-label" htmlFor={`country-${country}`}>
                         {country}
@@ -330,7 +310,7 @@ const AddressSearch = () => {
               <button 
                 type="submit" 
                 className="btn btn-dark"
-                disabled={nameError || loading}
+                disabled={nameError || countryError || loading}
               >
                 {loading ? 'Searching...' : 'Search'}
               </button>
@@ -373,7 +353,7 @@ const AddressSearch = () => {
                       <tr>
                         <th>Name</th>
                         <th>Address</th>
-                        <th>State</th>
+                        <th>Region</th>
                         <th>Country</th>
                       </tr>
                     </thead>
@@ -388,7 +368,15 @@ const AddressSearch = () => {
                           <td>{address.name}</td>
                           {/* <td>{address.addressLine || address.address1}</td> */}
                           <td>{address.addLine1}</td>
-                          <td>{address.state}</td>
+                          {(address.state) && (
+                            <td>{address.state}</td>
+                          )}
+                          {(address.bundesLand) && (
+                            <td>{address.bundesLand}</td>
+                          )}
+                          {(address.county) && (
+                            <td>{address.county}</td>
+                          )}
                           <td>{address.country}</td>
                         </tr>
                       ))}
@@ -535,14 +523,32 @@ const AddressSearch = () => {
                   
                   <dt className="col-sm-3">City</dt>
                   <dd className="col-sm-9">{selectedAddress.city}</dd>
+
+                  {(selectedAddress.bundesLand) && (
+                    <>
+                    <dt className="col-sm-3">Bundesland</dt>
+                    <dd className="col-sm-9">{selectedAddress.bundesLand}</dd>
+                    </>
+                  )}
                   
-                  <dt className="col-sm-3">State</dt>
-                  <dd className="col-sm-9">{selectedAddress.state}</dd>
+                  {(selectedAddress.state) && (
+                    <>
+                      <dt className="col-sm-3">State</dt>
+                      <dd className="col-sm-9">{selectedAddress.state}</dd>
+                    </>
+                  )}
                   
                   {(selectedAddress.pinCode) && (
                     <>
                       <dt className="col-sm-3">Pin Code</dt>
                       <dd className="col-sm-9">{selectedAddress.pinCode}</dd>
+                    </>
+                  )}
+
+                  {(selectedAddress.plz) && (
+                    <>
+                      <dt className="col-sm-3">Postleitzahl</dt>
+                      <dd className="col-sm-9">{selectedAddress.plz}</dd>
                     </>
                   )}
 
