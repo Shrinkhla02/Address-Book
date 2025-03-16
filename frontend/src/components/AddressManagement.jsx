@@ -22,6 +22,8 @@ const AddressSearch = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showResults, setShowResults] = useState(false);
+  const [totalAddresses, setTotalAddresses] = useState(0);
+  console.log("selectedAddress: ", selectedAddress)
   
   // Add validation state
   const [nameError, setNameError] = useState('');
@@ -100,10 +102,11 @@ const AddressSearch = () => {
       
       const response = await api.searchAddresses(params);
       console.log("Params1: ", params)
-      console.log(response.data.content);
+      console.log("searchContent: ", response.data.content);
       
       setSearchResults(response.data.content || []);
       setTotalPages(response.data.totalPages || 1);
+      setTotalAddresses(response.data.totalElements || 0);
       setCurrentPage(0);
       setShowResults(true);
       setLoading(false);
@@ -179,6 +182,7 @@ const AddressSearch = () => {
       
       setSearchResults(response.data.content || []);
       setTotalPages(response.data.totalPages || 1);
+      setTotalAddresses(response.data.totalElements || 0);
       setCurrentPage(pageNumber);
       setLoading(false);
     } catch (err) {
@@ -351,7 +355,7 @@ const AddressSearch = () => {
           <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h3 className="mb-0">Search Results</h3>
             <span className="badge bg-light text-dark">
-              {searchResults.length} {searchResults.length === 1 ? 'address' : 'addresses'} found
+              {totalAddresses} {totalAddresses === 1 ? 'address' : 'addresses'} found
             </span>
           </div>
           <div className="card-body p-0">
@@ -512,29 +516,49 @@ const AddressSearch = () => {
                   <dt className="col-sm-3">Address 1</dt>
                   <dd className="col-sm-9">{selectedAddress.addLine1}</dd>
                   
-                  {(selectedAddress.addLine2) && (
-                    <>
-                      <dt className="col-sm-3">Address 2</dt>
-                      <dd className="col-sm-9">{selectedAddress.addLine2}</dd>
-                    </>
-                  )}
+                  <dt className="col-sm-3">Address 2</dt>
+                  <dd className="col-sm-9">{selectedAddress.addLine2}</dd>
                   
-                  {(selectedAddress.addLine3) && (
+                  {(selectedAddress.landmark) && (
                     <>
-                      <dt className="col-sm-3">Address 3</dt>
-                      <dd className="col-sm-9">{selectedAddress.addLine3}</dd>
+                      <dt className="col-sm-3">Landmark</dt>
+                      <dd className="col-sm-9">{selectedAddress.landmark}</dd>
                     </>
                   )}
 
-                  {/* <dt className="col-sm-3">City</dt>
-                  <dd className="col-sm-9">{selectedAddress.state}</dd> */}
+                  {(selectedAddress.county) && (
+                    <>
+                    <dt className="col-sm-3">Region</dt>
+                    <dd className="col-sm-9">{selectedAddress.county}</dd>
+                    </>
+                  )}
+                  
+                  <dt className="col-sm-3">City</dt>
+                  <dd className="col-sm-9">{selectedAddress.city}</dd>
                   
                   <dt className="col-sm-3">State</dt>
                   <dd className="col-sm-9">{selectedAddress.state}</dd>
                   
-                  <dt className="col-sm-3">Zip Code</dt>
-                  <dd className="col-sm-9">{selectedAddress.zipCode}</dd>
+                  {(selectedAddress.pinCode) && (
+                    <>
+                      <dt className="col-sm-3">Pin Code</dt>
+                      <dd className="col-sm-9">{selectedAddress.pinCode}</dd>
+                    </>
+                  )}
+
+                  {(selectedAddress.zipCode) && (
+                    <>
+                    <dt className="col-sm-3">Zip Code</dt>
+                    <dd className="col-sm-9">{selectedAddress.zipCode}</dd>
+                    </>
+                  )}
                   
+                  {(selectedAddress.postCode) && (
+                    <>
+                    <dt className="col-sm-3">Post Code</dt>
+                    <dd className="col-sm-9">{selectedAddress.postCode}</dd>
+                    </>
+                  )}
                   <dt className="col-sm-3">Country</dt>
                   <dd className="col-sm-9">{selectedAddress.country}</dd>
                 </dl>
