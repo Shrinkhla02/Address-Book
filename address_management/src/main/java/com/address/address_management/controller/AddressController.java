@@ -63,7 +63,7 @@ public class AddressController {
     public ResponseEntity<ApiResponse<Page<CountrySpecificAddressDTO>>> searchAddresses(
             @Parameter(description = "Name to search for") @RequestParam(required = false) String name,
             @Parameter(description = "Address line to search for") @RequestParam(required = false) String addressLine,
-            @Parameter(description = "Country codes to filter by") @RequestParam(required = false) List<CountryCode> countryCodes,
+            @Parameter(description = "Country codes to filter by") @RequestParam(required = true) List<CountryCode> countryCodes,
             @Parameter(description = "Region to filter by") @RequestParam(required = false) String region,
             @Parameter(description = "Code to search for") @RequestParam(required = false) String code,
             @Parameter(description = "City to search for") @RequestParam(required = false) String city,
@@ -71,7 +71,7 @@ public class AddressController {
             @Parameter(description = "Size of page") @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<CountrySpecificAddressDTO> addresses = addressService.searchAddresses(
-                name, addressLine, countryCodes, city, region, code, pageable);
+                name, addressLine, countryCodes, region, city, code, pageable);
         return ResponseEntity.ok(ApiResponse.success(addresses, "Addresses searched successfully"));
     }
 
