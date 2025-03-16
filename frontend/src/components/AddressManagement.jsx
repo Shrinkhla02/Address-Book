@@ -9,6 +9,7 @@ const AddressSearch = () => {
     addressLine: '',
     address2: '',
     address3: '',
+    city: '',
     region: '',
     code: '',
     countryCodes: []
@@ -89,6 +90,7 @@ const AddressSearch = () => {
       const params = {
         name: searchParams.name,
         addressLine: searchParams.addressLine,
+        city: searchParams.city,
         region: searchParams.region,
         code: searchParams.code,
         countryCodes: searchParams.countryCodes.length > 0 ? searchParams.countryCodes : undefined,
@@ -117,6 +119,7 @@ const AddressSearch = () => {
       addressLine: '',
       address2: '',
       address3: '',
+      city: '',
       region: '',
       code: '',
       countryCodes: []
@@ -160,6 +163,7 @@ const AddressSearch = () => {
           name: searchParams.name,
           addressLine: searchParams.addressLine,
           region: searchParams.region,
+          city: searchParams.city,
           code: searchParams.code,
           countryCodes: searchParams.countryCodes.length > 0 ? searchParams.countryCodes : undefined,
           page: pageNumber,
@@ -189,6 +193,7 @@ const AddressSearch = () => {
       searchParams.name ||
       searchParams.addressLine ||
       searchParams.state ||
+      searchParams.city ||
       searchParams.code ||
       searchParams.countryCodes.length > 0
     );
@@ -238,8 +243,22 @@ const AddressSearch = () => {
                 </div>
               </div>
             </div>
-            
+                  
             <div className="row mb-3">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label htmlFor="city" className="form-label">City</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="city"
+                    name="city"
+                    value={searchParams.city}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+            
               <div className="col-md-6">
                 <div className="mb-3">
                   <label htmlFor="state" className="form-label">State</label>
@@ -253,6 +272,9 @@ const AddressSearch = () => {
                   />
                 </div>
               </div>
+            </div>
+
+            <div className="row mb-3">
               <div className="col-md-6">
                 <div className="mb-3">
                   <label htmlFor="code" className="form-label">Zip Code</label>

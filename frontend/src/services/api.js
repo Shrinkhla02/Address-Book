@@ -32,6 +32,7 @@ export const api = {
         name = '',
         region = '',
         code = '',
+        city= '',
         countryCodes = [], 
         page = 0, 
         size = 10 
@@ -44,6 +45,7 @@ export const api = {
       if (name) queryParams.append('name', name);
       if (region) queryParams.append('region', region);
       if (code) queryParams.append('code', code);
+      if (city) queryParams.append('city', city);
       
       // Add country codes if present
       if (countryCodes && countryCodes.length > 0) {
@@ -56,6 +58,7 @@ export const api = {
       queryParams.append('size', size);
       
       const url = `${API_BASE_URL}/addresses/search?${queryParams.toString()}`;
+      console.log("url: ", url);
       
       const response = await fetch(url, {
         method: 'GET',
@@ -63,6 +66,8 @@ export const api = {
           'accept': 'application/json',
         },
       });
+      
+      console.log("response: ", response);
       
       if (!response.ok) {
         throw new Error('Failed to search addresses');
