@@ -276,21 +276,27 @@ const AddressSearch = () => {
                 )}
               </div>
               <div className="row">
-                {['IND', 'DEU', 'GBR', 'USA', 'CAN'].map(country => (
-                  <div className="col-md-4 mb-2" key={country}>
+                {[
+                  { code: 'IND', name: 'India' },
+                  { code: 'DEU', name: 'Germany' },
+                  { code: 'GBR', name: 'United Kingdom' },
+                  { code: 'USA', name: 'United States' },
+                  { code: 'CAN', name: 'Canada' }
+                ].map(country => (
+                  <div className="col-md-4 mb-2" key={country.code}>
                     <div className="form-check">
                       <input
                         className="form-check-input"
                         type="checkbox"
-                        id={`country-${country}`}
+                        id={`country-${country.code}`}
                         name="countryCodes"
-                        value={country}
-                        checked={searchParams.countryCodes.includes(country)}
+                        value={country.code}
+                        checked={searchParams.countryCodes.includes(country.code)}
                         onChange={handleCountryChange}
                         required={searchParams.countryCodes.length === 0}
                       />
-                      <label className="form-check-label" htmlFor={`country-${country}`}>
-                        {country}
+                      <label className="form-check-label" htmlFor={`country-${country.code}`}>
+                        {country.name}
                       </label>
                     </div>
                   </div>
@@ -353,7 +359,7 @@ const AddressSearch = () => {
                       <tr>
                         <th>Name</th>
                         <th>Address</th>
-                        <th>Region</th>
+                        <th>State/Province</th>
                         <th>Country</th>
                       </tr>
                     </thead>
@@ -368,12 +374,19 @@ const AddressSearch = () => {
                           <td>{address.name}</td>
                           {/* <td>{address.addressLine || address.address1}</td> */}
                           <td>{address.addLine1}</td>
+
                           {(address.state) && (
                             <td>{address.state}</td>
+
                           )}
                           {(address.bundesLand) && (
                             <td>{address.bundesLand}</td>
                           )}
+
+                          {(address.province) && (
+                            <td>{address.province}</td>
+                          )}
+
                           {(address.county) && (
                             <td>{address.county}</td>
                           )}
@@ -504,8 +517,12 @@ const AddressSearch = () => {
                   <dt className="col-sm-3">Address 1</dt>
                   <dd className="col-sm-9">{selectedAddress.addLine1}</dd>
                   
-                  <dt className="col-sm-3">Address 2</dt>
-                  <dd className="col-sm-9">{selectedAddress.addLine2}</dd>
+                  {(selectedAddress.addLine2) && (
+                    <>
+                    <dt className="col-sm-3">Address 2</dt>
+                    <dd className="col-sm-9">{selectedAddress.addLine2}</dd>
+                  </>
+                  )}
                   
                   {(selectedAddress.landmark) && (
                     <>
@@ -528,6 +545,13 @@ const AddressSearch = () => {
                     <>
                     <dt className="col-sm-3">Bundesland</dt>
                     <dd className="col-sm-9">{selectedAddress.bundesLand}</dd>
+                    </>
+                  )}
+
+                  {(selectedAddress.province) && (
+                    <>
+                      <dt className="col-sm-3">Province</dt>
+                      <dd className="col-sm-9">{selectedAddress.province}</dd>
                     </>
                   )}
                   
