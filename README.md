@@ -1,5 +1,7 @@
 # Project Name
 
+Backend Depoyment: https://address-book-backend-10fac46fe1ae.herokuapp.com/
+Frontend Deployment: https://address-book-frontend-09af65530880.herokuapp.com/
 ## Overview
 
 This project provides a comprehensive system for [brief description of what your project does]. It currently manages approximately 1,200 records, which have been indexed for optimal search performance. The backend is built with Node.js, and the frontend utilizes [frontend framework]. Data is stored in a MySQL database deployed on Azure.
