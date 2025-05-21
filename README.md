@@ -95,25 +95,15 @@ This project provides a comprehensive system for [brief description of what your
 
 6. The frontend will be accessible at `http://localhost:3000`.
 
-## Key Features
-
-- Feature 1: [Description]
-- Feature 2: [Description]
-- Feature 3: [Description]
-
 ## Enhancement Opportunities
 
 The current system has several areas where improvements can be made:
 
 1. **Data Expansion**: While the current dataset contains approximately 1,200 records, the database and indexing structure support significant scaling.
 
-2. **Search Optimization**: The search functionality is currently indexed for performance, but additional filtering options could enhance user experience.
+2. **Authentication System**: Implementing a more robust user authentication and authorization system.
 
-3. **Authentication System**: Implementing a more robust user authentication and authorization system.
 
-4. **Analytics Dashboard**: Adding visualization tools to provide insights from the data.
-
-5. **API Documentation**: Expanding the API documentation with Swagger or similar tools.
 
 ## Troubleshooting
 
