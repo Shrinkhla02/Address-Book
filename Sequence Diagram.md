@@ -72,10 +72,5 @@ The sequence diagram includes the following components:
 
 - The design includes pagination support to handle large result sets efficiently
 - Country-specific transformations are performed in a loop, which could be a performance concern for large result sets
-- Consider batch processing or parallel streams for large datasets
+- We can Consider batch processing or parallel streams for large datasets
 
-## Security Considerations
-
-- The diagram doesn't show explicit validation or security checks
-- Consider implementing input validation in the controller layer
-- Ensure proper authorization checks are in place for sensitive address data
